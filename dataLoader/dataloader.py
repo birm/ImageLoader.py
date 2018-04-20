@@ -23,7 +23,7 @@ def parseInputFile(inputfile):
             try:
                 #process
                 reader = csv.DictReader(f)
-                return {row['Id']:rows['study_id'],rows['File'] for row in reader if rows['File'] is not None}
+                return {row['Id']:[rows['study_id'],rows['File']] for row in reader if rows['File'] is not None}
 
             except IOError:
                 print("troubles parsing inputfile:"+ inputfile)
