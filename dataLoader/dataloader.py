@@ -19,14 +19,11 @@ def postPayLoad(payLoad,url,apiKey):
 def parseInputFile(inputfile):
     inputFileDict = {}
     if os.path.exists(inputfile):
-        with open(inputfile, newline='') as f:
+        with open(inputfile) as f:
             try:
                 #process
-                inputReader = csv.reader(f)
-                #for row in inputReader:
-                inputFileDict = {rows[0]:[rows[1],rows[2]] for rows in inputReader}
-
-                return inputFileDict
+                reader = csv.DictReader(f)
+                return {row['Id']:rows['study_id'],rows['File'] for row in reader if rows['File'] is not None}
 
             except IOError:
                 print("troubles parsing inputfile:"+ inputfile)
@@ -72,7 +69,7 @@ def main(argv):
     apiKey = inputs['apiKey']
     url = outputfile
 
-  
+
     logging.basicConfig(filename='dataloader.log',  filemode='w', level=logging.DEBUG)
 
     logging.info("Log started on: "+str(datetime.datetime.now()))
@@ -85,9 +82,12 @@ def main(argv):
             fileMetadata['study_id'] = parsedInput[uId][0]
             fileMetadata['file-location'] = parsedInput[uId][1]
             print(fileMetadata)
-            extractor = MetadataExtractor(fileMetadata)
-        
-            payLoad = extractor.createPayLoad()
+            try:
+                extractor = MetadataExtractor(fileMetadata)
+                payLoad = extractor.createPayLoad()
+            except BaseException as e:
+                logging.warning("Failed to get metadata for " + str(uId) + ": " + e)
+                continue
             if(payLoad == {}):
                 logging.warning("Failed: Id: "+str(uId)+" file-location: "+ parsedInput[uId][1] + " couldn't find file or failed to fetch metadata")
                 continue
@@ -103,5 +103,3 @@ def main(argv):
     logging.info("Compeleted on: "+str(datetime.datetime.now()))
 if __name__ == "__main__":
     main(sys.argv[1:])
-
-

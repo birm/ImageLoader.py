@@ -54,7 +54,7 @@ class MetadataExtractor:
         fileMetadata = self.fileMetadata
         imageMetadata = self.imageMetadata
         #print(imageMetadata.properties)
-        
+
         if(imageMetadata):
             for prop in self.PROPERTIES:
                 #print(prop)
@@ -78,14 +78,14 @@ class MetadataExtractor:
                             payLoad[prop] = float(imageMetadata.properties["tiff.YResolution"])
 
 
-                    
+
                     '''
                     (SVS) Generic
                     '''
                     property_ = 'openslide.'+str(prop)
-                    
+
                     if(property_ in imageMetadata.properties):
-                     
+
                         payLoad[prop] = float(imageMetadata.properties['openslide.'+str(prop)])
                     else:
 
@@ -105,10 +105,10 @@ class MetadataExtractor:
                 elif prop == "level_count":
                     payLoad[prop] = int(imageMetadata.level_count)
                 elif prop == "timestamp":
-                    payLoad[prop] = time.time() 
+                    payLoad[prop] = time.time()
                 else:
                     print("Couldn't handle: "+ prop)
-       	''' 
+       	'''
         #Check nothing is missing
         for prop in self.PROPERTIES:
             #print(payLoad)
@@ -125,10 +125,6 @@ class MetadataExtractor:
             payLoad["mpp_x"] = None
             payLoad["mpp_y"] = None
             print("Warning, could't find mpp_x and mpp_y for case_id: "+payLoad["case_id"])
-        payLoad["subject_id"] = payLoad["case_id"]
+        payLoad["subject_id"] = payLoad["study_id"]
         payLoad["filename"] = payLoad["file-location"]
         return payLoad
-
-
-
-
