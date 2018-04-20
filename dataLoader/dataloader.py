@@ -86,7 +86,7 @@ def main(argv):
                 extractor = MetadataExtractor(fileMetadata)
                 payLoad = extractor.createPayLoad()
             except BaseException as e:
-                logging.warning("Failed to get metadata for " + str(uId) + ": " + e)
+                logging.warning("Failed to get metadata for " + str(uId) + ": " + str(e))
                 continue
             if(payLoad == {}):
                 logging.warning("Failed: Id: "+str(uId)+" file-location: "+ parsedInput[uId][1] + " couldn't find file or failed to fetch metadata")
